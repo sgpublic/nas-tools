@@ -1,6 +1,6 @@
 import ddddocr
 import requests
-from base64 import b64encode
+from base64 import b64encode, b64decode
 
 import log
 from config import Config
@@ -51,18 +51,22 @@ class OcrHelper:
         if StringUtils.is_string_and_not_empty(captcha):
             return captcha
 
-        if not self.custom_server_avaliable():
-            return ""
-
-        ret = RequestUtils(content_type="application/json").post_res(
-            url=self._ocr_b64_url,
-            json={"base64_img": image_b64})
-        if ret:
-            return ret.json().get("result")
+        if self.custom_server_avaliable():
+            ret = RequestUtils(content_type="application/json").post_res(
+                url=self._ocr_b64_url,
+                json={"base64_img": image_b64})
+            if ret:
+                result = ret.json().get("result")
+                if StringUtils.is_string_and_not_empty(result):
+                    return result
 
         try:
-            ddddresult = self.ocr.classification(image_bin)
-            if ddddresult:
+            if image_bin is None and image_b64 is not None:
+                image_bin = b64decode(image_b64).decode()
+            ddddresult = None
+            if image_bin is not None:
+                ddddresult = self.ocr.classification(image_bin)
+            if StringUtils.is_string_and_not_empty(ddddresult):
                 return ddddresult
         except Exception as e:
             ExceptionUtils.exception_traceback(e)

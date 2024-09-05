@@ -5,12 +5,40 @@ import re
 
 from lxml import etree
 
-from app.sites import SiteConf
-from app.utils import SystemUtils
-from config import RMT_SUBEXT
+import log
+from app.utils import SystemUtils, ExceptionUtils
+from config import RMT_SUBEXT, Config
 
 
 class SiteHelper:
+    _LOGOUT_USER_PANEL = [
+        '//a[contains(@href, "logout")]'
+        '//a[contains(@data-url, "logout")]'
+        '//a[contains(@href, "mybonus")]'
+        '//a[contains(@onclick, "logout")]'
+        '//a[contains(@href, "usercp")]',
+        '//form[contains(@action, "logout")]',
+        '//div[@class="user-info-side"]',
+        '//div[@id="main_succeed" and not(contains(@style, "none"))]',
+        '//a[@id="myitem"]',
+        '//a[@href="/users/profile"]',
+    ]
+
+    @classmethod
+    def _logout_user_panel(cls):
+        internal_conf = list(cls._LOGOUT_USER_PANEL)
+        custom_conf = os.path.join(Config().get_config_path(), "siteconf/LOGOUT_USER_PANEL.txt")
+        if os.path.exists(custom_conf):
+            try:
+                with open(custom_conf, 'r') as conf:
+                    for line in conf:
+                        line = line.strip()
+                        if line != "":
+                            internal_conf.append(line)
+            except Exception as e:
+                ExceptionUtils.exception_traceback(e)
+                log.error(f"【User】读取 LOGOUT_USER_PANNEL 出错：{e}")
+        return internal_conf
 
     @classmethod
     def is_logged_in(cls, html_text):
@@ -26,7 +54,7 @@ class SiteHelper:
         if html.xpath("//input[@type='password']"):
             return False
         # 是否存在登出和用户面板等链接
-        xpaths = SiteConf().get_login_conf()["logout_userpanel"]
+        xpaths = cls._logout_user_panel()
         for xpath in xpaths:
             if html.xpath(xpath):
                 return True

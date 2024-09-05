@@ -275,7 +275,7 @@ class ProUser(UserMixin):
     def brush_conf(self, brush_conf):
         pass
 
-    def __parse_users_sites(self, user_sites_bin_path, custom_site_path = os.path.join(Config().get_config_path(), "sites")):
+    def __parse_users_sites(self, user_sites_bin_path):
         if not os.path.exists(user_sites_bin_path):
             log.error(f"【User】用户站点索引文件不存在")
             return None
@@ -302,23 +302,23 @@ class ProUser(UserMixin):
             if "conf" in user_sites:
                 brush_conf = user_sites.get("conf", {})
 
-            for item in os.listdir(custom_site_path):
-                if not item.endswith(".json"):
-                    continue
-                with open(os.path.join(custom_site_path, item), "r", encoding="utf-8") as f:
-                    try:
-                        data: dict = json.load(f)
-                        domain = data["domain"]
-                        if "conf" in data:
-                            brush_conf[domain] = data["conf"]
-                            del data["conf"]
-                        public_sites.append(domain)
-                        user_sites["indexers"].append(data)
-                    except Exception as e:
-                        ExceptionUtils.exception_traceback(e)
-                        log.error(f"【User】自定义站点索引解析失败（{item}）: {str(e)}")
-
-
+            custom_site_path = os.path.join(Config().get_config_path(), "sites")
+            if os.path.exists(custom_site_path):
+                for item in os.listdir(custom_site_path):
+                    if not item.endswith(".json"):
+                        continue
+                    with open(os.path.join(custom_site_path, item), "r", encoding="utf-8") as f:
+                        try:
+                            data: dict = json.load(f)
+                            domain = data["domain"]
+                            if "conf" in data:
+                                brush_conf[domain] = data["conf"]
+                                del data["conf"]
+                            public_sites.append(domain)
+                            user_sites["indexers"].append(data)
+                        except Exception as e:
+                            ExceptionUtils.exception_traceback(e)
+                            log.error(f"【User】自定义站点索引解析失败（{item}）: {str(e)}")
 
             return user_sites, public_sites, brush_conf
         except Exception as err:

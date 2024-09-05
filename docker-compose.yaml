@@ -3,7 +3,6 @@ services:
   # 仅供开发测试的 docker-compose 文件，一般用户请使用 README.md 中给出的示例！
   nas-tools:
     image: mhmzx/nas-tools:v3.5.0
-    restart: unless-stopped
     ports:
       - 3000:3000
     networks:

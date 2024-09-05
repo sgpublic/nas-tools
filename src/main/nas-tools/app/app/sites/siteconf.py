@@ -85,18 +85,6 @@ class SiteConf:
             '//input[@name="two_step_code"]',
             '//input[@name="2fa_secret"]',
         ],
-        "logout_userpanel": [
-            '//a[contains(@href, "logout")]'
-            '//a[contains(@data-url, "logout")]'
-            '//a[contains(@href, "mybonus")]'
-            '//a[contains(@onclick, "logout")]'
-            '//a[contains(@href, "usercp")]',
-            '//form[contains(@action, "logout")]',
-            '//div[@class="user-info-side"]',
-            '//div[@id="main_succeed" and not(contains(@style, "none"))]',
-            '//a[@id="myitem"]',
-            '//a[@href="/users/profile"]',
-        ]
     }
 
     def __init__(self):

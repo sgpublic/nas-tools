@@ -211,13 +211,13 @@ class SiteCookie(object):
             # 读取错误信息
             error_xpath = None
             for xpath in login_conf.get("error"):
-                if html.xpath(xpath):
+                if html_text.xpath(xpath):
                     error_xpath = xpath
                     break
             if not error_xpath:
                 return None, None, "登录失败"
             else:
-                error_msg = html.xpath(error_xpath)[0]
+                error_msg = html_text.xpath(error_xpath)[0]
                 return None, None, error_msg
 
     def get_captcha_text(self, chrome, code_url):

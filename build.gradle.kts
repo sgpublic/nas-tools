@@ -106,6 +106,11 @@ tasks {
                 "zip",
             ),
         ))
+        runCommand(command(
+            "ln -sf /command/with-contenv /usr/bin/with-contenv",
+            "ln -sf /usr/bin/chromedriver /usr/lib/chromium/chromedriver",
+            "chown poetry-runner:poetry-runner /usr/bin/chromedriver /usr/lib/chromium/chromedriver"
+        ))
         copyFile("./rootf", "/")
         environmentVariable(mapOf(
             "TERM" to "xtern",
@@ -116,9 +121,6 @@ tasks {
             "NASTOOL_VERSION" to "master",
             "REPO_URL" to "https://github.com/hsuyelin/nas-tools.git",
             "PYPI_MIRROR" to "https://pypi.tuna.tsinghua.edu.cn/simple",
-            "PUID" to "1000",
-            "PGID" to "1000",
-            "UMASK" to "000",
             "PYTHONWARNINGS" to "ignore:semaphore_tracker:UserWarning",
         ))
         workingDir("/app")
