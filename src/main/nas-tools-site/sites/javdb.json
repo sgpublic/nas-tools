@@ -1,0 +1,10 @@
+{
+    "id": "javdb",
+    "name": "JavDB",
+    "domain": "https://www.javdb.com/",
+    "encoding": "UTF-8",
+    "public": true,
+    "conf": {
+        "LOGIN": "over18?respond=1&rurl=nxvbdlp5vjAstlysksbAdpldr3Zxlp8z97ntkpd4y03s0r63smxA2277vgqmlcxj167g917xw48v0x1"
+    }
+}

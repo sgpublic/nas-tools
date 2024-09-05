@@ -1,0 +1,10 @@
+{
+    "id": "cunhua-blog",
+    "name": "\u6751\u82b1",
+    "domain": "https://www.cunhua.blog/",
+    "encoding": "UTF-8",
+    "public": true,
+    "conf": {
+        "LOGIN": "member.php?mod=logging&action=login"
+    }
+}

@@ -1,3 +1,6 @@
-[submodule "third_party/feapder"]
-	path = third_party/feapder
+[submodule "src/main/docker/third_party/feapder"]
+	path = src/main/docker/third_party/feapder
 	url = https://github.com/jxxghp/feapder
+[submodule "src/main/xunlei"]
+	path = src/main/xunlei
+	url = git@gitlab.sgpublic.xyz:mhmzx/xunlei-nastools.git

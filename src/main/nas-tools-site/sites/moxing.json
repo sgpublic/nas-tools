@@ -1,0 +1,10 @@
+{
+    "id": "moxing",
+    "name": "\u9b54\u6027",
+    "domain": "https://moxing.lol/",
+    "encoding": "UTF-8",
+    "public": true,
+    "conf": {
+        "LOGIN": "member.php?mod=logging&action=login"
+    }
+}
