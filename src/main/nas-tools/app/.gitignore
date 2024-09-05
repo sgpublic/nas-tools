@@ -18,4 +18,4 @@ package.json
 web/backend/user.sites.bin
 
 third_party_nas_xunlei
-app/plugins/modules/nasxunlei.py
+app/downloader/client/nasxunlei.py

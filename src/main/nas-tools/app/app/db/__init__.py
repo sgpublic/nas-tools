@@ -1,5 +1,5 @@
 import os
-from ... import log
+import log
 from config import Config
 from .main_db import MainDb
 from .main_db import DbPersist

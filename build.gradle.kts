@@ -32,16 +32,16 @@ tasks {
         group = "nas-tools"
         doLast {
             delete(
-                "./src/main/nas-tools/nas-tools/third_party_nas_xunlei",
-                "./src/main/nas-tools/nas-tools/app/downloader/client",
+                "./src/main/nas-tools/app/third_party_nas_xunlei",
+                "./src/main/nas-tools/app/app/downloader/client/nasxunlei.py",
             )
             copy {
                 from("./src/main/xunlei/third_party")
-                into("./src/main/nas-tools/nas-tools/third_party_nas_xunlei")
+                into("./src/main/nas-tools/app/third_party_nas_xunlei")
             }
             copy {
                 from("./src/main/xunlei/nasxunlei.py")
-                into("./src/main/nas-tools/nas-tools/app/downloader/client")
+                into("./src/main/nas-tools/app/app/downloader/client")
             }
         }
     }
@@ -59,10 +59,10 @@ tasks {
         group = "nas-tools"
         dependsOn(genSites)
         doLast {
-            delete("./src/main/nas-tools/nas-tools/web/backend/user.sites.bin")
+            delete("./src/main/nas-tools/app/web/backend/user.sites.bin")
             copy {
                 from("./src/main/nas-tools-site/nas-tools/user.sites.bin")
-                into("./src/main/nas-tools/nas-tools/web/backend")
+                into("./src/main/nas-tools/app/web/backend")
             }
         }
     }
@@ -107,6 +107,21 @@ tasks {
             ),
         ))
         copyFile("./rootf", "/")
+        environmentVariable(mapOf(
+            "TERM" to "xtern",
+            "TZ" to "Asia/Shanghai",
+            "NASTOOL_CONFIG" to "/config/config.yaml",
+            "NASTOOL_AUTO_UPDATE" to "false",
+            "NASTOOL_CN_UPDATE" to "true",
+            "NASTOOL_VERSION" to "master",
+            "REPO_URL" to "https://github.com/hsuyelin/nas-tools.git",
+            "PYPI_MIRROR" to "https://pypi.tuna.tsinghua.edu.cn/simple",
+            "PUID" to "1000",
+            "PGID" to "1000",
+            "UMASK" to "000",
+            "PYTHONWARNINGS" to "ignore:semaphore_tracker:UserWarning",
+        ))
+        workingDir("/app")
     }
     val dockerBuildImage by creating(DockerBuildImage::class) {
         group = "docker"
@@ -115,8 +130,6 @@ tasks {
         dockerFile = dockerCreateDockerfile.destFile
         images.add(provider { "$tag:v$version" })
         images.add(provider { "$tag:latest" })
-        images.add("$tag:latest")
-        noCache = true
     }
 
     val dockerPushBuildBookImageOfficial by creating(DockerPushImage::class) {
@@ -124,7 +137,6 @@ tasks {
         dependsOn(dockerBuildImage)
         images.add(provider { "$tag:v$version" })
         images.add(provider { "$tag:latest" })
-        images.add("$tag:latest")
     }
 
     val githubRelease by getting(GithubReleaseTask::class) {
