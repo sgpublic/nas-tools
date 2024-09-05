@@ -2,6 +2,7 @@ import base64
 import time
 
 from lxml import etree
+from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as es
 from selenium.webdriver.support.wait import WebDriverWait
@@ -158,16 +159,17 @@ class SiteCookie(object):
                         else:
                             # 等待用户输入
                             captcha = None
-                            code_key = StringUtils.generate_random_str(5)
+                            code_key = None
                             for sec in range(30, 0, -1):
-                                if self.get_code(code_key):
+                                if code_key is not None and self.get_code(code_key):
                                     # 用户输入了
                                     captcha = self.get_code(code_key)
                                     log.info("【Sites】接收到验证码：%s" % captcha)
                                     self.progress.update(ptype=ProgressKey.SiteCookie,
                                                          text="接收到验证码：%s" % captcha)
                                     break
-                                else:
+                                elif code_key is None:
+                                    code_key = StringUtils.generate_random_str(5)
                                     # 获取验证码图片base64
                                     code_bin = self.get_captcha_base64(chrome, code_url)
                                     if not code_bin:
@@ -177,6 +179,7 @@ class SiteCookie(object):
                                     # 推送到前端
                                     self.progress.update(ptype=ProgressKey.SiteCookie,
                                                          text=f"{code_bin}|{code_key}")
+                                else:
                                     time.sleep(1)
                             if not captcha:
                                 return None, None, "验证码输入超时"
@@ -186,9 +189,13 @@ class SiteCookie(object):
                         # 不可见元素不处理
                         pass
                 # 提交登录
-                submit_obj.click()
+                actions = ActionChains(chrome.browser)
+                actions.move_to_element(submit_obj).click().perform()
                 # 等待页面刷新完毕
-                WebDriverWait(driver=chrome.browser, timeout=5).until(es.staleness_of(submit_obj))
+                try:
+                    WebDriverWait(driver=chrome.browser, timeout=5).until(es.staleness_of(submit_obj))
+                except Exception:
+                    pass
             else:
                 return None, None, "未找到登录按钮"
         except Exception as e:
