@@ -8,9 +8,7 @@ import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
 import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
 import com.bmuschko.gradle.docker.tasks.image.Dockerfile
 import com.github.breadmoirai.githubreleaseplugin.GithubReleaseTask
-import io.github.sgpublic.CreateTag
-import io.github.sgpublic.aptInstall
-import io.github.sgpublic.command
+import io.github.sgpublic.*
 
 plugins {
     alias(libs.plugins.docker.api)
@@ -109,7 +107,6 @@ tasks {
         runCommand(command(
             "ln -sf /command/with-contenv /usr/bin/with-contenv",
             "ln -sf /usr/bin/chromedriver /usr/lib/chromium/chromedriver",
-            "chown poetry-runner:poetry-runner /usr/bin/chromedriver /usr/lib/chromium/chromedriver"
         ))
         copyFile("./rootf", "/")
         environmentVariable(mapOf(
@@ -119,9 +116,13 @@ tasks {
             "NASTOOL_AUTO_UPDATE" to "false",
             "NASTOOL_CN_UPDATE" to "true",
             "NASTOOL_VERSION" to "master",
-            "REPO_URL" to "https://github.com/hsuyelin/nas-tools.git",
+            "NASTOOL_VERSION" to "master",
+            "REPO_URL" to "https://github.com/sgpublic/nas-tools.git",
             "PYPI_MIRROR" to "https://pypi.tuna.tsinghua.edu.cn/simple",
             "PYTHONWARNINGS" to "ignore:semaphore_tracker:UserWarning",
+            "AUTO_VENV" to "1",
+            "AUTO_VENV_NAME" to "nas-tools",
+            "AUTO_PIP_INSTALL" to "1",
         ))
         workingDir("/app")
     }
@@ -134,7 +135,7 @@ tasks {
         images.add(provider { "$tag:latest" })
     }
 
-    val dockerPushBuildBookImageOfficial by creating(DockerPushImage::class) {
+    val dockerPushImageOfficial by creating(DockerPushImage::class) {
         group = "docker"
         dependsOn(dockerBuildImage)
         images.add(provider { "$tag:v$version" })
@@ -150,6 +151,10 @@ tasks {
         tagName = provider { "v$version" }
         releaseName = provider { "v$version" }
         overwrite = true
+    }
+
+    val clean by creating(Delete::class) {
+        delete(rootProject.file("build"))
     }
 }
 

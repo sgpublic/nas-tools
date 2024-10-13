@@ -2,23 +2,6 @@
 
 set -v
 
-if [ ! -d ".venv" ]; then
-  python3 -m venv ./.venv
-fi
-
-source ./.venv/bin/activate
-
-mkdir -p ~/.cache/nas-tools
-if [ ! -e "~/.cache/nas-tools/git.date" ]; then
-  echo 0 > ~/.cache/nas-tools/git.date
-fi
-
-pip config set global.index-url https://mirrors.aliyun.com/pypi/simple/
-
-if [ ! "$(cat ~/.cache/nas-tools/git.date | tr -d '\n')" == "$now" ]; then
-  timeout 1m git pull
-  poetry install
-  echo "$now" > ~/.cache/nas-tools/git.date
-fi
+mkdir -p /.local
 
 poetry run python3 run.py

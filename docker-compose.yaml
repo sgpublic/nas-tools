@@ -6,15 +6,15 @@ services:
     ports:
       - 3000:3000
     networks:
-      - nas-toolschain-network
+      - nas-network
     volumes:
-      - /mnt/core/app/nastools/config:/config
-      - /mnt/onedrive/Backups/NasTools:/config/backup_file
-      - /mnt/core/var/tmp/nastools:/home/poetry-runner/.cache
-      - /mnt/resource:/mnt/resource
-      - /mnt/pt/PT:/mnt/pt
-      - /mnt/pt/Private:/mnt/private
+      - /vol1/1000/App/nas-tools/data:/config
+      - /vol2/var/cache:/.cache
+      - /vol3/1000:/mnt/resource
+    environment:
+      PUID: 1000
+      PGID: 1001
 
 networks:
-  nas-toolschain-network:
-    name: nas-toolschain-network
+  nas-network:
+    external: true

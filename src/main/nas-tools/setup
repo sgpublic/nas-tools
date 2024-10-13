@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -v
+
+chown $PUID:$PGID /usr/bin/chromedriver /usr/lib/chromium/chromedriver

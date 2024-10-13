@@ -1,7 +1,5 @@
 package io.github.sgpublic
 
-import com.google.gson.Gson
-import com.google.gson.JsonObject
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider
 import org.gradle.api.DefaultTask
